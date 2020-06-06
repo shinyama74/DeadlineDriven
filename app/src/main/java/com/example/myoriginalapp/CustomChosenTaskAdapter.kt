@@ -9,19 +9,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.realm.OrderedRealmCollection
 import io.realm.RealmRecyclerViewAdapter
-import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.item_task_data_cell.view.*
+import java.nio.file.Files.find
 import java.text.SimpleDateFormat
 import java.util.*
+import android.widget.CheckBox as CheckBox1
 
-class CustomTaskAdapter(private val context: Context,
-                        private var taskList: OrderedRealmCollection<UnSolvedTask>?,//なんだこいつは.MainActivityでrealmResultをfindAllして得られるやつ
-                        private var listener : OnItemClickLisener,
-                        private val autoUpdate: Boolean //trueにするとDB更新時に自動でView生成してくれる
-                        ):
-    RealmRecyclerViewAdapter<UnSolvedTask,CustomTaskAdapter.ViewHolder> (taskList,autoUpdate) {
+class CustomChosenTaskAdapter(private val context: Context
+                              //,private var taskList: OrderedRealmCollection<UnSolvedTask>?,//なんだこいつは
+                              //private var listener : CustomTaskAdapter.OnItemClickListener,
+                              //private val autoUpdate: Boolean //trueにするとDB更新時に自動でView生成してくれる
+):
+    RecyclerView.Adapter<CustomChosenTaskAdapter.ViewHolder> () {//RealmRecyclerViewからただのRecyclerViewへ
 
-    //val items: MutableList<UnSolvedTask>? = mutableListOf()
+    var items: MutableList<UnSolvedTask?> =mutableListOf()
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         //val TaskImage: ImageView =view.findViewById(R.id.taskImageView)
@@ -31,8 +32,6 @@ class CustomTaskAdapter(private val context: Context,
 
         val deleteButton: ImageView = view.deleteButton
         val checkButton: ImageButton = view.checkTaskButton
-
-        val checkTaskBox:CheckBox = view.findViewById(R.id.taskCheckBox)
         //val container : LinearLayout = view.container
     }
 
@@ -41,37 +40,44 @@ class CustomTaskAdapter(private val context: Context,
         return ViewHolder(v)
     }
 
-    interface OnItemClickLisener{
-        fun onItemDeleteClick(item: UnSolvedTask)
-        fun onItemCheckClick(item: UnSolvedTask)
-        fun onChosenItemsClick(item: UnSolvedTask, flag:Boolean)
-    }
+//    fun addAll(chosenData:MutableList<UnSolvedTask?>){
+//        this.items= chosenData.toMutableList()
+//    }
 
-    override fun getItemCount(): Int = taskList?.size ?: 0
+      fun addAll2(items: List<UnSolvedTask>){
+          this.items.addAll(items)
+          notifyDataSetChanged()
+      }
+
+
+    override fun getItemCount(): Int{
+        return items.size
+    }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item :UnSolvedTask = taskList?.get(position) ?:return
+        val item : UnSolvedTask? = items[position]!!
         //holder.TaskImage.setImageResource(item.imageResource)
-        holder.TaskName.text = item.taskName
+        holder.TaskName.text = item!!.taskName
         holder.TaskDeadLine.text = item.taskDeadLine
         holder.TaskCostTime.text = item.taskCostTime.toString()
-        var flag = holder.checkTaskBox.isChecked
+//        holder.deleteButton.setOnClickListener {
+//            listener.onItemDeleteClick(item)
+//        }
+//        holder.checkButton.setOnClickListener {
+//            listener.onItemCheckClick(item)
+//        }
 
-        holder.deleteButton.setOnClickListener {
-            listener.onItemDeleteClick(item)
-        }
-        holder.checkButton.setOnClickListener {
-            listener.onItemCheckClick(item)
-        }
-        holder.checkTaskBox.setOnClickListener{
-            listener.onChosenItemsClick(item,flag)
-        }
-//        //holder.container.setOnClickListener{
+        //holder.container.setOnClickListener{
         //    listener.onItemClick(item)
         //}
-
     }
 
+
+
+//    interface OnItemClickLisener{
+//        fun onItemDeleteClick(item: UnSolvedTask)
+//        fun onItemCheckClick(item: UnSolvedTask)
+//    }
     //fun addAll(items: List<UnSolvedTask>?) {
     //    if (items != null) {
     //        this.items?.addAll(items)

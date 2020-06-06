@@ -1,22 +1,25 @@
 package com.example.myoriginalapp
 
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.realm.Realm
 import io.realm.RealmResults
 import io.realm.Sort
-import io.realm.kotlin.createObject
 import kotlinx.android.synthetic.main.activity_main.*
-import java.nio.file.Files.delete
 import java.util.*
+
+import android.util.Log
 
 //startActivityForResultの引数。どこで起動したアクティビティかを判別するのに用いる。
 const val MY_REQUEST_CODE = 0
+var chosenIdList:Array<String> = arrayOf()
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,39 +32,58 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        create("Day8プレゼン資料作り","0620",60)
-        //create("月曜３限レポート","0622",45)
-
-        //空の場合のダミーデータ
-        //if(taskList.isEmpty()){
-        //}
+        //ダミーデータとしてコンパイル後毎回自動生成
+        create("Day7プレゼン資料作り","0620",60)
+        create("月曜３限レポート","0622",45)
 
         val taskList = readAll()
 
         // RecycleView関連
         val adapter = CustomTaskAdapter(this, taskList,
             object : CustomTaskAdapter.OnItemClickLisener{
-                override fun onItemClick(item: UnSolvedTask, clickedText: String) {
-                    TODO("Not yet implemented")
-                }
-
-                override fun onItemClick(item: UnSolvedTask) {
+                override fun onItemDeleteClick(item: UnSolvedTask) {
                     Toast.makeText(applicationContext, "「" + item.taskName + "」を削除しました", Toast.LENGTH_SHORT).show()
                     delete(item.id)
                 }
+                override fun onItemCheckClick(item: UnSolvedTask) {
+                    Toast.makeText(applicationContext, "チェックしました", Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onChosenItemsClick(item: UnSolvedTask, flag:Boolean) {//未選択時にクリックで「1:選択判定」、選択時にクリックで「0:未選択判定」、それ以外はエラー
+                    update(item,flag)
+                    Toast.makeText(applicationContext, "isChosen:"+ item.isChosen.toString(), Toast.LENGTH_SHORT).show()
+                }
             }
             ,true)
+
         //val recyclerView = findViewById<RecyclerView>(R.id.recycler_view)
         recyclerView.setHasFixedSize(true)//なんだこれ
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
+
+        //recyclerViewの罫線。暫定的。
+        val itemDecoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
+        recyclerView.addItemDecoration(itemDecoration)
         //adapter.addAll(taskData)
 
         //"NEW"ボタンで新規登録画面
         val newButton = findViewById<Button>(R.id.mainToInputButton)
         newButton.setOnClickListener {
-            val intent = Intent(this,InputTaskActivity::class.java)
-            startActivityForResult(intent,MY_REQUEST_CODE)
+            val intentNew = Intent(this,InputTaskActivity::class.java)
+            startActivityForResult(intentNew,MY_REQUEST_CODE)
+        }
+
+        //"Working"ボタンでゲーム画面へ
+        val workingButton = findViewById<Button>(R.id.workingStartButton)
+        workingButton.setOnClickListener {
+            val intentSetting = Intent(this,SettingActivity::class.java)
+            //Workingボタン押下時点でチェック済みのものを探索
+//            val chosenTasksList = realm.where(UnSolvedTask::class.java).equalTo("isChosen",1.toInt()).findAll()
+//            chosenTasksList.forEach{
+//                chosenIdList += it.id
+//            }
+//            intent.putExtra("chosenIdList", chosenIdList)
+            startActivityForResult(intentSetting,MY_REQUEST_CODE)
         }
     }
 
@@ -100,12 +122,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun update(item: UnSolvedTask, flag:Boolean){
+        realm.executeTransaction {
+            var task = realm.where(UnSolvedTask::class.java).equalTo("id",item.id).findFirst()
+            if(flag) {
+                task!!.isChosen=1
+            }else{
+                task!!.isChosen=0
+            }
+        }
+    }
+
     fun delete(id: String){
         realm.executeTransaction{
             val task = realm.where(UnSolvedTask::class.java).equalTo("id" , id).findFirst()?: return@executeTransaction
             task.deleteFromRealm()
         }
     }
-
 
 }

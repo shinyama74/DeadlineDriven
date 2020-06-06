@@ -37,8 +37,11 @@ class InputTaskActivity : AppCompatActivity() {
                 setResult(Activity.RESULT_OK, intent)
                 finish()
             }
+        }
 
-
+        val backButton = findViewById<Button>(R.id.inputToMainButton)
+        backButton.setOnClickListener {
+            finish()
         }
     }
 }

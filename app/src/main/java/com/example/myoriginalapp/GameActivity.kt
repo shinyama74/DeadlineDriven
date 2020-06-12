@@ -185,20 +185,23 @@ private inner class blnView(blnContext: Context?, blnBitmap: Bitmap) : View(blnC
      * ディスプレイ領域から外に出ないように制御してる感じかな
      */
     fun move() {
-        if (blnCurrentX + blndx < 0) {
-            blndx = -blndx
-        }
-        if (blnCurrentY + blndy < 0) {
+//        if (blnCurrentX + blndx < 0) {
+//            blndx = -blndx
+//        }
+        if (blnCurrentY + blndy < 400 - blndy*10) {//ふわふわの下限
             blndy = -blndy
         }
-        if (canvasWidth < blnCurrentX + blndx + blnbitmapWidth) {
-            blndx = -blndx
-        }
-        if (canvasHeight < blnCurrentY + blndy + blnbitmapHeight) {
+        if (400 + blndy*10 < blnCurrentY + blndy) {//ふわふわの上限
             blndy = -blndy
         }
+//        if (canvasWidth < blnCurrentX + blndx + blnbitmapWidth) {
+//            blndx = -blndx
+//        }
+//        if (canvasHeight < blnCurrentY + blndy + blnbitmapHeight) {
+//            blndy = -blndy
+//        }
         //baloonCurrentX += dx
-        //baloonCurrentY += dy
+        blnCurrentY += blndy
     }
 
 
@@ -227,11 +230,11 @@ private inner class blnView(blnContext: Context?, blnBitmap: Bitmap) : View(blnC
 
         //x方向、y方向の、描画ごとの移動量。変えると、アニメーションの移動速度が変化する感じか。
         //ここでは起動のたび（MyViewインスタンス生成のたび？）Randomで速度が変わっている。
-//        val r = Random()
+        val r = Random()
 //            dx = ((1.0 * r.nextFloat() - 1.0)*STEP).toFloat()
-//            dy = ((1.0 * r.nextFloat() - 1.0)*STEP).toFloat()
+//        blndy = ((1.0 * r.nextFloat() - 1.0)*STEP).toFloat()
 //        dx = 1.0.toFloat()
-//        dy = 1.0.toFloat()
+        blndy = 1.0.toFloat()
 
 
 //            //これはよくわからない。x0,y0でも動くぽいが。
@@ -279,18 +282,18 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
      * ディスプレイ領域から外に出ないように制御してる感じかな
      */
     fun move() {
-        if (cld1CurrentX + cld1dx < 0) {
-            cld1dx = -cld1dx
+//        if (cld1CurrentX + cld1dx < 0) {
+//            cld1dx = -cld1dx
+//        }
+//        if (cld1CurrentY + cld1dy < 0) {
+//            cld1dy = -cld1dy
+//        }
+        if (canvasWidth < cld1CurrentX + cld1dx - cld1bitmapWidth) {
+            cld1CurrentX = (-cld1bitmapWidth).toFloat()
         }
-        if (cld1CurrentY + cld1dy < 0) {
-            cld1dy = -cld1dy
-        }
-        if (canvasWidth < cld1CurrentX + cld1dx + cld1bitmapWidth) {
-            cld1dx = -cld1dx
-        }
-        if (canvasHeight < cld1CurrentY + cld1dy + cld1bitmapHeight) {
-            cld1dy = -cld1dy
-        }
+//        if (canvasHeight < cld1CurrentY + cld1dy + cld1bitmapHeight) {
+//            cld1dy = -cld1dy
+//        }
         cld1CurrentX += cld1dx
 //        cld1CurrentY += cld1dy
     }
@@ -324,7 +327,7 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
 //        val r = Random()
 //            dx = ((1.0 * r.nextFloat() - 1.0)*STEP).toFloat()
 //            dy = ((1.0 * r.nextFloat() - 1.0)*STEP).toFloat()
-        cld1dx = 0.1.toFloat()
+        cld1dx = 1.0.toFloat()
 //        cld1dy = 1.0.toFloat()
 
 
@@ -338,6 +341,104 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
         mPainter.isAntiAlias = true
     }
 }
+
+
+//CCCCCCCCCCCCCCCCCCCCCC--雲関連その2--CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+
+ private inner class cld2View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(cld1Context) {
+        private val cld1Bitmap: Bitmap
+        var cld1CurrentX: Float
+        var cld1CurrentY: Float
+        var cld1dx: Float = 0.0f
+        var cld1dy: Float = 0.0f
+        var cld1bitmapHeight: Int
+        var cld1bitmapWidth: Int
+        var rot = 0F
+        var canvasWidth = 0
+        var canvasHeight = 0
+        private val mPainter = Paint()
+
+        /**
+         * onDrawは、Viewのインスタンスが作られた（レイアウトにaddViewされた？）ときと、
+         * そのインスタンスで（on）invalidateが呼ばれたときに、実行されるそうだ。
+         * View上に描きたい内容は、ここで渡されるCanvas canvasを使って描く感じか。
+         * @param canvas
+         */
+        override fun onDraw(canvas: Canvas) {
+            super.onDraw(canvas)
+            canvasWidth = canvas.width
+            canvasHeight = canvas.height
+
+            //ビットマップの描画
+            canvas.drawBitmap(cld1Bitmap, cld1CurrentX, cld1CurrentY, mPainter)
+        }
+
+        /**
+         * 移動後の位置を計算
+         * ディスプレイ領域から外に出ないように制御してる感じかな
+         */
+        fun move() {
+//        if (cld1CurrentX + cld1dx < 0) {
+//            cld1dx = -cld1dx
+//        }
+//        if (cld1CurrentY + cld1dy < 0) {
+//            cld1dy = -cld1dy
+//        }
+            if (canvasWidth < cld1CurrentX + cld1dx - cld1bitmapWidth) {
+                cld1CurrentX = (-cld1bitmapWidth).toFloat()
+            }
+//        if (canvasHeight < cld1CurrentY + cld1dy + cld1bitmapHeight) {
+//            cld1dy = -cld1dy
+//        }
+            cld1CurrentX += cld1dx
+//        cld1CurrentY += cld1dy
+        }
+
+
+        /**
+         * コンストラクタ
+         */
+        init {
+
+            //WindowManagerクラスとDisplayクラスを使って画面のサイズを取得する
+            val display = windowManager.defaultDisplay
+            val point = Point(0, 0)
+            display.getSize(point) //ここの処理で、引数(Point outSize)に渡した変数に対し、ディスプレイサイズのピクセルが代入される。
+            val displayWidth = point.x //ディスプレイ幅を取得。
+            val displayHeight = point.y //同、高さを取得。
+
+            //引数に取ったビットマップ（今回は乗っかってる絵）とその幅＆高さを得る。
+            this.cld1Bitmap = cld1Bitmap
+            cld1bitmapHeight = cld1Bitmap.height
+            cld1bitmapWidth = cld1Bitmap.width
+
+            //開始位置を指定。画面中央は、ディスプレイ幅の1/2と高さの1/2で得ている。
+            val x0 = (300 + cld1bitmapWidth).toFloat()
+            val y0 = (600).toFloat()
+//            val x0 = canvasWidth/2.toFloat()
+//            val y0 = 100.toFloat()
+
+            //x方向、y方向の、描画ごとの移動量。変えると、アニメーションの移動速度が変化する感じか。
+            //ここでは起動のたび（MyViewインスタンス生成のたび？）Randomで速度が変わっている。
+//        val r = Random()
+//            dx = ((1.0 * r.nextFloat() - 1.0)*STEP).toFloat()
+//            dy = ((1.0 * r.nextFloat() - 1.0)*STEP).toFloat()
+            cld1dx = 1.0.toFloat()
+//        cld1dy = 1.0.toFloat()
+
+
+//            //これはよくわからない。x0,y0でも動くぽいが。
+            cld1CurrentX = x0 - cld1bitmapWidth / 2
+            cld1CurrentY = y0 - cld1bitmapHeight / 2
+//            currentX = x0
+//            currentY = y0
+
+            //アンチエイリアスの設定。View内の描画物に対して機能するのかな？よくわかんない。
+            mPainter.isAntiAlias = true
+        }
+    }
+
+
 
     companion object {
         private const val STEP = 50 //これ増やすと、起動ごとの速度設定（ランダム）のふり幅が大きくなるようだ。
@@ -359,17 +460,19 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
         //ビットマップ（＝回転する絵）を得ておく。
         val bitmap = BitmapFactory.decodeResource(resources, R.drawable.shuriken01) //drawableに突っ込んでおいた画像を使用。
         val balloonBitmap = BitmapFactory.decodeResource(resources, R.drawable.kikyu)
-        val cld1Bitmap = BitmapFactory.decodeResource(resources, R.drawable.kumo1)
-
+        val Cld1Bitmap = BitmapFactory.decodeResource(resources, R.drawable.kumo1)
+        val Cld2Bitmap = BitmapFactory.decodeResource(resources, R.drawable.kumo2)
 
         //viewのサブクラスを得ておく。レイアウトに乗っかる、絵コンテンツの総体、とでも捉えたらよいのかな。
         //これがインスタンス？
         val myView = MyView(this, bitmap)
         val balloonView =blnView(this, balloonBitmap)
-        val cld1View = cld1View(this, cld1Bitmap)
+        val cld1View = cld1View(this, Cld1Bitmap)
+        val cld2View = cld2View(this, Cld2Bitmap)
 
         //ベースのレイアウトにviewをaddする。乗っける、的な？
         relativeLayout.addView(cld1View)
+        relativeLayout.addView(cld2View)
         relativeLayout.addView(myView)
         relativeLayout.addView(balloonView)
         //基本は、ViewのonDraw内（描画処理の実体）を1回呼んでおしまいなので、
@@ -391,10 +494,12 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
                 myView.postInvalidate() //←コレで結果的にViewのonDrawを呼ぶのだそう。
                 balloonView.postInvalidate()
                 cld1View.postInvalidate()
+                cld2View.postInvalidate()
                 //類似のinvalidateというメソッドもあるが、別スレッドからの場合はこちらのpost～を使うとのこと。
                 myView.move() //再描画後にコレ。次の描画用に、新しい位置座標などを更新してる。
                 balloonView.move()
                 cld1View.move()
+                cld2View.move()
             }
         })
 

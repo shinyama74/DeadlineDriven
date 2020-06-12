@@ -33,8 +33,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         //ダミーデータとしてコンパイル後毎回自動生成
-        create("Day7プレゼン資料作り","0620",60)
-        create("月曜３限レポート","0622",45)
+//        create("Day7プレゼン資料作り","0620",60)
+//        create("月曜３限レポート","0622",45)
 
         val taskList = readAll()
 
@@ -71,6 +71,13 @@ class MainActivity : AppCompatActivity() {
         newButton.setOnClickListener {
             val intentNew = Intent(this,InputTaskActivity::class.java)
             startActivityForResult(intentNew,MY_REQUEST_CODE)
+        }
+
+        //暫定移動ボタン
+        val gameButton = findViewById<Button>(R.id.toGameButton)
+        gameButton.setOnClickListener {
+            val intentGame = Intent(this,GameActivity::class.java)
+            startActivityForResult(intentGame,MY_REQUEST_CODE)
         }
 
         //"Working"ボタンでゲーム画面へ

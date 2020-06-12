@@ -17,28 +17,7 @@ import java.util.*
 class GameActivity : AppCompatActivity() {
     var flag:Boolean = false
 
-
-//   progressBar ・　Timer　関連　　PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
-    var cnt=100
-    val hnd0=Handler()
-
-    val rnb0: Runnable=object: Runnable{
-        override fun run(){
-            cnt--
-            progressBar1.progress = cnt
-            if(cnt>=0){//1000ミリ秒=1秒
-                hnd0.postDelayed(this,100)
-            }
-            else if(cnt<0){
-                Toast.makeText(applicationContext, "時間切れです", Toast.LENGTH_SHORT).show()
-            }
-
-        }
-
-    }
-
 //一つのオブジェクトに一つのクラス。継承処理したい。
-
 
 // Canvas 関連　　CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
@@ -446,7 +425,32 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
         const val SAIBYOUGA_COUNT = 5000 //再描画回数の指定。再描画用スレッド内の処理でインクリメントがこれに達すると終了。
     }
 
+
+//---------------------------------------------------------------------------------------------------------------
+    //ここからProgress Bar
+
+    //  Timer　関連　　PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
+
+    var cnt=100
+    val hnd0=Handler()
+
+    val rnb0: Runnable=object: Runnable{
+        override fun run(){
+            cnt--
+            progressBar1.progress = cnt
+            if(cnt>=0){//1000ミリ秒=1秒
+                hnd0.postDelayed(this,100)
+            }
+            else if(cnt<0){
+                Toast.makeText(applicationContext, "時間切れです", Toast.LENGTH_SHORT).show()
+            }
+
+        }
+
+    }
+
 //=================================以下main===================================================================================================
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -466,7 +470,7 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
         //viewのサブクラスを得ておく。レイアウトに乗っかる、絵コンテンツの総体、とでも捉えたらよいのかな。
         //これがインスタンス？
         val myView = MyView(this, bitmap)
-        val balloonView =blnView(this, balloonBitmap)
+        val balloonView = blnView(this, balloonBitmap)
         val cld1View = cld1View(this, Cld1Bitmap)
         val cld2View = cld2View(this, Cld2Bitmap)
 
@@ -503,6 +507,11 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
             }
         })
 
+ //=====================================================================================
+ //　一時プロパティ
+        //全体残り時間（仮にここで定める）
+        var setMinutes:Int=1
+
 
 
 
@@ -514,14 +523,7 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
         progressBar1.max =cnt
         progressBar1.progress = cnt
         progressBar1.secondaryProgress = cnt
-//        progressBar2.setPadding(400, 0, 400, 0)
-//        progressBar2.max =100
-//        progressBar2.progress = 30
-//        progressBar2.secondaryProgress = 100
-//        progressBar3.setPadding(800, 0, 0, 0)
-//        progressBar3.max =100
-//        progressBar3.progress = 80
-//        progressBar3.secondaryProgress = 100
+
 
         val startButton = findViewById<Button>(R.id.startButton)
         startButton.setOnClickListener {
@@ -533,5 +535,29 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
         }
 
     }
+
+    fun setTimerProgress(setMinutes:Int){
+
+        var minutes = setMinutes+1
+        val hnd=Handler()
+
+        val rnb: Runnable=object: Runnable{
+            override fun run(){
+                minutes--
+                progressBar1.progress = cnt
+                if(cnt>=0){//1000ミリ秒=1秒
+                    hnd0.postDelayed(this,100)
+                }
+                else if(cnt<0){
+                    Toast.makeText(applicationContext, "時間切れです", Toast.LENGTH_SHORT).show()
+                }
+
+            }
+
+        }
+
+    }
+
+
 
 }

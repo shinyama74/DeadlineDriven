@@ -7,11 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
-import android.widget.Button
-import android.widget.ProgressBar
-import android.widget.RelativeLayout
-import android.widget.Toast
+import android.widget.*
 import kotlinx.android.synthetic.main.activity_game.*
+import kotlinx.android.synthetic.main.activity_input_task.view.*
 import java.util.*
 
 class GameActivity : AppCompatActivity() {
@@ -510,14 +508,16 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
  //=====================================================================================
  //　一時プロパティ
         //全体残り時間（仮にここで定める）
-        var setMinutes:Int=1
+        var setMinutes:Int=61
+        var setSeconds:Int=setMinutes*60
 
 
 
 
 //   progress timer 関連　PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
 
-        //progressBar1.setProgress(90,true)
+        TimerProgressBar.max=setSeconds
+        TimerProgressBar.progress=setSeconds
 
         progressBar1.setPadding(0, 0, 800, 0)
         progressBar1.max =cnt
@@ -528,6 +528,10 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
         val startButton = findViewById<Button>(R.id.startButton)
         startButton.setOnClickListener {
             hnd0.post(rnb0)
+            var restSeconds=findViewById<TextView>(R.id.timerSecondsTextView)
+            var restMinutes=findViewById<TextView>(R.id.timerMinutesTextView)
+            var restHours=findViewById<TextView>(R.id.timerHoursTextView)
+            setTimerProgress(setSeconds,restSeconds,restMinutes,restHours)
             flag = !flag
             if(flag){
                 mainThread.start()
@@ -536,27 +540,43 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
 
     }
 
-    fun setTimerProgress(setMinutes:Int){
-
-        var minutes = setMinutes+1
+    fun setTimerProgress(setSeconds:Int,rSeconds:TextView,rMinutes:TextView,rHours:TextView){
+        var seconds = setSeconds
+        var delayMillis:Long=1000
         val hnd=Handler()
 
         val rnb: Runnable=object: Runnable{
             override fun run(){
-                minutes--
-                progressBar1.progress = cnt
-                if(cnt>=0){//1000ミリ秒=1秒
-                    hnd0.postDelayed(this,100)
+                seconds--
+                TimerProgressBar.progress=seconds
+                var hours=seconds/3600
+                var minutes= (seconds%3600)/60
+                var seconds = seconds%60
+
+                checkDigits(hours,rHours)
+                checkDigits(minutes,rMinutes)
+                checkDigits(seconds,rSeconds)
+
+                if(seconds>=0){//1000ミリ秒=1秒
+                    hnd.postDelayed(this, delayMillis)
                 }
-                else if(cnt<0){
+                else if(seconds<0){
                     Toast.makeText(applicationContext, "時間切れです", Toast.LENGTH_SHORT).show()
                 }
-
             }
-
         }
-
+        hnd.post(rnb)
     }
+
+    fun checkDigits(number:Int,text:TextView){
+        if(number<10){
+            text.text = "0"+ number.toString()
+        }else{
+            text.text = number.toString()
+        }
+    }
+
+
 
 
 

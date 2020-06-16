@@ -12,6 +12,6 @@ open class UnSolvedTask (
     open var taskName: String = "",
     open var taskDeadLine: String= "",
     open var taskCostTime: Int = 0,
-    open var isChosen: Int = 0,
+    open var isChosen: Boolean = false,
     open var taskRegisterDay: Date = Date(System.currentTimeMillis())
 ): RealmObject()

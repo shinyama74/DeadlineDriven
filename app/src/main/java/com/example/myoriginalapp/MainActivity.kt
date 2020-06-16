@@ -33,8 +33,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         //ダミーデータとしてコンパイル後毎回自動生成
-//        create("Day7プレゼン資料作り","0620",60)
-//        create("月曜３限レポート","0622",45)
+        create("Day7プレゼン資料作り","0620",60)
+        create("月曜３限レポート","0622",45)
 
         val taskList = readAll()
 
@@ -133,9 +133,9 @@ class MainActivity : AppCompatActivity() {
         realm.executeTransaction {
             var task = realm.where(UnSolvedTask::class.java).equalTo("id",item.id).findFirst()
             if(flag) {
-                task!!.isChosen=1
+                task!!.isChosen=true
             }else{
-                task!!.isChosen=0
+                task!!.isChosen=false
             }
         }
     }

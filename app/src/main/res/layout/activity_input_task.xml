@@ -46,6 +46,14 @@
             android:orientation="horizontal">
 
             <EditText
+                android:id="@+id/editTextNumberDecimal2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="numberDecimal" />
+
+            <EditText
                 android:id="@+id/InputTaskDeadlineTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -61,7 +69,7 @@
                 android:layout_margin="4dp"
                 android:ems="10"
                 android:hint="必要時間"
-                android:inputType="textPersonName" />
+                android:inputType="numberDecimal" />
 
         </LinearLayout>
 

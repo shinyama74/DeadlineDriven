@@ -3,6 +3,7 @@ package com.example.myoriginalapp
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import android.widget.Toast
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -39,7 +40,17 @@ class SettingActivity : AppCompatActivity() {
 //            chosenData.add(realm.where(UnSolvedTask::class.java).equalTo("id",i.toString()).findFirst())
 //        }
 
-        val adapter = CustomChosenTaskAdapter(this)
+        val adapter = CustomChosenTaskAdapter(this,
+            object : CustomChosenTaskAdapter.OnItemClickLisener{
+                override fun onItemDeleteClick(item: UnSolvedTask) {
+                    Toast.makeText(applicationContext, "「" + item.taskName + "」を削除しました", Toast.LENGTH_SHORT).show()
+                    delete(item.id)
+                }
+                override fun onItemCheckClick(item: UnSolvedTask) {
+                    Toast.makeText(applicationContext, "チェックしました", Toast.LENGTH_SHORT).show()
+                }
+            }
+            ,true)
         val recyclerView = findViewById<RecyclerView>(R.id.chosenRecyclerView)
         recyclerView.setHasFixedSize(true)//なんだこれ
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -61,5 +72,6 @@ class SettingActivity : AppCompatActivity() {
 //    fun readAll() : RealmResults<UnSolvedTask> {
 //        return realm.where(UnSolvedTask::class.java).findAll().sort("taskRegisterDay", Sort.ASCENDING)
 //    }
-
+fun delete(id: String){
+    }
 }

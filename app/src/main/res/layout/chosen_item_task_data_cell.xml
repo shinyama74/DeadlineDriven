@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
-            android:id="@+id/checkTaskButton"
+            android:id="@+id/cscheckTaskButton"
             android:layout_width="30sp"
             android:layout_height="30sp"
             android:layout_gravity="center"
@@ -28,7 +28,7 @@
             android:background="@drawable/lit_logo" />
 
         <TextView
-            android:id="@+id/deadlineDayTextView"
+            android:id="@+id/csdeadlineDayTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -36,7 +36,7 @@
             android:text="0621" />
 
         <TextView
-            android:id="@+id/costTimeTextView"
+            android:id="@+id/cscostTimeTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -47,7 +47,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/taskNameTextView"
+            android:id="@+id/cstaskNameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -57,7 +57,7 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/deleteButton"
+        android:id="@+id/csdeleteButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

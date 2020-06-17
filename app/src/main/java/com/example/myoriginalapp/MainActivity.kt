@@ -33,8 +33,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         //ダミーデータとしてコンパイル後毎回自動生成
-        create("Day7プレゼン資料作り","0620",60)
-        create("月曜３限レポート","0622",45)
+        create("checkedDay7プレゼン資料作り","0620",60,true)
+        create("checked月曜３限レポート","0622",45,true)
 
         val taskList = readAll()
 
@@ -73,13 +73,6 @@ class MainActivity : AppCompatActivity() {
             startActivityForResult(intentNew,MY_REQUEST_CODE)
         }
 
-        //暫定移動ボタン
-        val gameButton = findViewById<Button>(R.id.toGameButton)
-        gameButton.setOnClickListener {
-            val intentGame = Intent(this,GameActivity::class.java)
-            startActivityForResult(intentGame,MY_REQUEST_CODE)
-        }
-
         //"Working"ボタンでゲーム画面へ
         val workingButton = findViewById<Button>(R.id.workingStartButton)
         workingButton.setOnClickListener {
@@ -104,9 +97,8 @@ class MainActivity : AppCompatActivity() {
             val newName = received.extras!!.get("name")
             val newDeadline = received.extras!!.get("deadline")
             val newTime = received.extras!!.get("time")
-            create(newName.toString(),newDeadline.toString(),Integer.parseInt(newTime.toString()))
+            create(newName.toString(),newDeadline.toString(),Integer.parseInt(newTime.toString()),true)
         }
-
     }
 
     //Realmの終了処理
@@ -120,12 +112,13 @@ class MainActivity : AppCompatActivity() {
         return realm.where(UnSolvedTask::class.java).findAll().sort("taskRegisterDay", Sort.ASCENDING)
     }
 
-    fun create(tskName:String, tskDeadLine:String, tskCostTime:Int){
+    fun create(tskName:String, tskDeadLine:String, tskCostTime:Int, tskIsChosen:Boolean){
         realm.executeTransaction {
             val task = it.createObject(UnSolvedTask::class.java, UUID.randomUUID().toString())
                 task.taskName = tskName
                 task.taskDeadLine = tskDeadLine
                 task.taskCostTime = tskCostTime
+                task.isChosen = true
         }
     }
 

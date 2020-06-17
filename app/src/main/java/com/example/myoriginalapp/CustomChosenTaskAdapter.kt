@@ -19,10 +19,10 @@ class CustomChosenTaskAdapter(private val context: Context,
     var items: MutableList<UnSolvedTask?> =mutableListOf()
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        //val TaskImage: ImageView =view.findViewById(R.id.taskImageView)
-        val TaskDeadLine: TextView = view.findViewById(R.id.deadlineDayTextView)
-        val TaskCostTime: TextView = view.findViewById(R.id.costTimeTextView)
-        val TaskName: TextView = view.findViewById(R.id.taskNameTextView)
+//        val TaskImage: ImageView =view.findViewById(R.id.taskImageView)
+        val TaskDeadLine: TextView = view.findViewById(R.id.csdeadlineDayTextView)
+        val TaskCostTime: TextView = view.findViewById(R.id.cscostTimeTextView)
+        val TaskName: TextView = view.findViewById(R.id.cstaskNameTextView)
 
         val deleteButton: ImageView = view.deleteButton
         val checkButton: ImageButton = view.checkTaskButton

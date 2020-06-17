@@ -5,19 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.realm.OrderedRealmCollection
-import io.realm.RealmRecyclerViewAdapter
 import kotlinx.android.synthetic.main.item_task_data_cell.view.*
-import java.nio.file.Files.find
-import java.text.SimpleDateFormat
-import java.util.*
-import android.widget.CheckBox as CheckBox1
 
 class CustomChosenTaskAdapter(private val context: Context,
-                              //private var taskList: OrderedRealmCollection<UnSolvedTask>?//なんだこいつは
-                              private var listener : CustomChosenTaskAdapter.OnItemClickLisener,
+                              private var chosenTaskList: OrderedRealmCollection<UnSolvedTask>?,//なんだこいつは
+                              private var listener: OnItemClickLisener,
                               private val autoUpdate: Boolean //trueにするとDB更新時に自動でView生成してくれる
 ):
     RecyclerView.Adapter<CustomChosenTaskAdapter.ViewHolder> () {//RealmRecyclerViewからただのRecyclerViewへ
@@ -55,7 +49,7 @@ class CustomChosenTaskAdapter(private val context: Context,
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item : UnSolvedTask? = items[position]!!
+        val item :UnSolvedTask = chosenTaskList?.get(position) ?:return
         //holder.TaskImage.setImageResource(item.imageResource)
         holder.TaskName.text = item!!.taskName
         holder.TaskDeadLine.text = item.taskDeadLine

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import io.realm.Realm
 import io.realm.RealmQuery
 import io.realm.RealmResults
@@ -39,6 +40,7 @@ class SettingActivity : AppCompatActivity() {
 //        }
 
         val adapter = CustomChosenTaskAdapter(this)
+        val recyclerView = findViewById<RecyclerView>(R.id.chosenRecyclerView)
         recyclerView.setHasFixedSize(true)//なんだこれ
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter

@@ -36,7 +36,7 @@ class CustomChosenTaskAdapter(private val context: Context
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
-        val v = LayoutInflater.from(context).inflate(R.layout.item_task_data_cell, viewGroup, false)
+        val v = LayoutInflater.from(context).inflate(R.layout.chosen_item_task_data_cell, viewGroup, false)
         return ViewHolder(v)
     }
 

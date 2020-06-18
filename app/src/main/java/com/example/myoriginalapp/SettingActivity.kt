@@ -59,12 +59,6 @@ class SettingActivity : AppCompatActivity() {
         val startButton = findViewById<Button>(R.id.gameStartButton)
         startButton.setOnClickListener {
             val intentGame = Intent(this,GameActivity::class.java)
-            //Workingボタン押下時点でチェック済みのものを探索
-//            val chosenTasksList = realm.where(UnSolvedTask::class.java).equalTo("isChosen",1.toInt()).findAll()
-//            chosenTasksList.forEach{
-//                chosenIdList += it.id
-//            }
-//            intent.putExtra("chosenIdList", chosenIdList)
             startActivityForResult(intentGame,MY_REQUEST_CODE)
         }
     }

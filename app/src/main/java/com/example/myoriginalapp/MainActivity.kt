@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
 import android.util.Log
+import android.view.View
 
 //startActivityForResultの引数。どこで起動したアクティビティかを判別するのに用いる。
 const val MY_REQUEST_CODE = 0
@@ -40,7 +41,7 @@ class MainActivity : AppCompatActivity() {
 
         // RecycleView関連
         val adapter = CustomTaskAdapter(this, taskList,
-            object : CustomTaskAdapter.OnItemClickLisener{
+            object : CustomTaskAdapter.OnItemClickListener{
                 override fun onItemDeleteClick(item: UnSolvedTask) {
                     Toast.makeText(applicationContext, "「" + item.taskName + "」を削除しました", Toast.LENGTH_SHORT).show()
                     delete(item.id)
@@ -52,6 +53,10 @@ class MainActivity : AppCompatActivity() {
                 override fun onChosenItemsClick(item: UnSolvedTask, flag:Boolean) {//未選択時にクリックで「1:選択判定」、選択時にクリックで「0:未選択判定」、それ以外はエラー
                     update(item,flag)
                     Toast.makeText(applicationContext, "isChosen:"+ item.isChosen.toString(), Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onItemClickListener(view: View, position: Int){
+
                 }
             }
             ,true)

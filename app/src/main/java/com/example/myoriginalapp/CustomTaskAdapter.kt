@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.realm.OrderedRealmCollection
@@ -16,7 +17,7 @@ import java.util.*
 
 class CustomTaskAdapter(private val context: Context,
                         private var taskList: OrderedRealmCollection<UnSolvedTask>?,//なんだこいつは.MainActivityでrealmResultをfindAllして得られるやつ
-                        private var listener : OnItemClickLisener,
+                        private var listener : OnItemClickListener,
                         private val autoUpdate: Boolean //trueにするとDB更新時に自動でView生成してくれる
                         ):
     RealmRecyclerViewAdapter<UnSolvedTask,CustomTaskAdapter.ViewHolder> (taskList,autoUpdate) {
@@ -41,10 +42,11 @@ class CustomTaskAdapter(private val context: Context,
         return ViewHolder(v)
     }
 
-    interface OnItemClickLisener{
+    interface OnItemClickListener{
         fun onItemDeleteClick(item: UnSolvedTask)
         fun onItemCheckClick(item: UnSolvedTask)
         fun onChosenItemsClick(item: UnSolvedTask, flag:Boolean)
+        fun onItemClickListener(view:View , position: Int)
     }
 
     override fun getItemCount(): Int = taskList?.size ?: 0
@@ -63,6 +65,11 @@ class CustomTaskAdapter(private val context: Context,
         holder.checkButton.setOnClickListener {
             listener.onItemCheckClick(item)
         }
+        holder.OnItemClickListener{
+            listener.onItemClickListener(it,position)
+
+        }
+
         holder.checkTaskBox.setOnClickListener{
             listener.onChosenItemsClick(item,flag)
         }
@@ -70,6 +77,10 @@ class CustomTaskAdapter(private val context: Context,
         //    listener.onItemClick(item)
         //}
 
+    }
+
+    fun setOnItemClickListener(listener: OnItemClickListener){
+        this.listener = listener
     }
 
     //fun addAll(items: List<UnSolvedTask>?) {

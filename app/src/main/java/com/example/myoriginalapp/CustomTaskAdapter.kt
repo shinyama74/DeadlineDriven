@@ -44,9 +44,8 @@ class CustomTaskAdapter(private val context: Context,
 
     interface OnItemClickListener{
         fun onItemDeleteClick(item: UnSolvedTask)
-        fun onItemCheckClick(item: UnSolvedTask)
+        fun onItemCheckClick(item: UnSolvedTask, flag:Boolean)
         fun onChosenItemsClick(item: UnSolvedTask, flag:Boolean)
-        fun onItemClickListener(view:View , position: Int)
     }
 
     override fun getItemCount(): Int = taskList?.size ?: 0
@@ -63,13 +62,8 @@ class CustomTaskAdapter(private val context: Context,
             listener.onItemDeleteClick(item)
         }
         holder.checkButton.setOnClickListener {
-            listener.onItemCheckClick(item)
+            listener.onItemCheckClick(item,flag)
         }
-        holder.OnItemClickListener{
-            listener.onItemClickListener(it,position)
-
-        }
-
         holder.checkTaskBox.setOnClickListener{
             listener.onChosenItemsClick(item,flag)
         }
@@ -77,10 +71,6 @@ class CustomTaskAdapter(private val context: Context,
         //    listener.onItemClick(item)
         //}
 
-    }
-
-    fun setOnItemClickListener(listener: OnItemClickListener){
-        this.listener = listener
     }
 
     //fun addAll(items: List<UnSolvedTask>?) {

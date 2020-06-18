@@ -46,7 +46,9 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(applicationContext, "「" + item.taskName + "」を削除しました", Toast.LENGTH_SHORT).show()
                     delete(item.id)
                 }
-                override fun onItemCheckClick(item: UnSolvedTask) {
+                override fun onItemCheckClick(item: UnSolvedTask, flag:Boolean) {
+                    update(item,flag)
+                    Toast.makeText(applicationContext, "isChosen:"+ item.isChosen.toString(), Toast.LENGTH_SHORT).show()
                     Toast.makeText(applicationContext, "チェックしました", Toast.LENGTH_SHORT).show()
                 }
 
@@ -55,9 +57,6 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(applicationContext, "isChosen:"+ item.isChosen.toString(), Toast.LENGTH_SHORT).show()
                 }
 
-                override fun onItemClickListener(view: View, position: Int){
-
-                }
             }
             ,true)
 

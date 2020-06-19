@@ -80,12 +80,6 @@ class MainActivity : AppCompatActivity() {
         val workingButton = findViewById<Button>(R.id.workingStartButton)
         workingButton.setOnClickListener {
             val intentSetting = Intent(this,SettingActivity::class.java)
-            //Workingボタン押下時点でチェック済みのものを探索
-//            val chosenTasksList = realm.where(UnSolvedTask::class.java).equalTo("isChosen",1.toInt()).findAll()
-//            chosenTasksList.forEach{
-//                chosenIdList += it.id
-//            }
-//            intent.putExtra("chosenIdList", chosenIdList)
             startActivityForResult(intentSetting,MY_REQUEST_CODE)
         }
     }

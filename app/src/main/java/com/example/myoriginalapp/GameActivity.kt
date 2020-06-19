@@ -481,7 +481,6 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
         relativeLayout.addView(cld2View)
         relativeLayout.addView(myView)
         relativeLayout.addView(balloonView)
-        relativeLayout.addView(balloonBrokenView)
 
         //基本は、ViewのonDraw内（描画処理の実体）を1回呼んでおしまいなので、
         //1枚絵ならば、ここまでで完成。
@@ -504,6 +503,8 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
                 cld1View.postInvalidate()
                 cld2View.postInvalidate()
                 if(totalTimeFlag){
+                    relativeLayout.removeView(balloonView)
+                    relativeLayout.addView(balloonBrokenView)
                     balloonBrokenView.postInvalidate()
                     baloonBrokenDescribeFlag=true
                 }else{
@@ -513,6 +514,8 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
                 if(baloonBrokenDescribeFlag){
                     Thread.sleep(3000.toLong())
                     flag=false
+                    val intentFailure = Intent(this,FailureActivity::class.java)
+                    startActivityForResult(intentFailure,MY_REQUEST_CODE)
                 }
                 else{
                     myView.move() //再描画後にコレ。次の描画用に、新しい位置座標などを更新してる。
@@ -549,10 +552,6 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
         flag=true
         hnd0.post(rnb0)
         mainThread.start()
-        if(!flag){
-            val intentFailure = Intent(this,FailureActivity::class.java)
-            startActivityForResult(intentFailure,MY_REQUEST_CODE)
-        }
     }
 
     fun setTimerProgress(setSeconds:Int,rSeconds:TextView,rMinutes:TextView,rHours:TextView){

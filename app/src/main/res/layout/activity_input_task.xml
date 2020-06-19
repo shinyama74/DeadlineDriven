@@ -10,9 +10,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
+        android:layout_marginTop="40dp"
         android:fontFamily="casual"
         android:text="新規タスク登録"
-        android:textSize="18sp"
+        android:textSize="30sp"
         android:textStyle="italic"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,49 +21,56 @@
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:layout_marginBottom="150dp"
         android:background="#DAC5FF"
         android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView">
+        app:layout_constraintTop_toTopOf="parent">
 
         <EditText
             android:id="@+id/InputTaskNameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
             android:layout_margin="4dp"
+            android:layout_marginLeft="12dp"
             android:ems="10"
             android:hint="タスク名"
             android:inputType="textPersonName|text" />
 
-        <LinearLayout
+        <EditText
+            android:id="@+id/InputTaskCostTimeTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_margin="4dp"
+            android:layout_marginLeft="12dp"
+            android:ems="10"
+            android:hint="必要時間"
+            android:inputType="numberDecimal" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/dateInputButton"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="12dp"
+                android:background="@drawable/callendar" />
 
             <EditText
                 android:id="@+id/InputTaskDeadlineTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
-                android:ems="10"
+                android:ems="8"
                 android:hint="締め切り日"
                 android:inputType="textPersonName" />
-
-            <EditText
-                android:id="@+id/InputTaskCostTimeTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:ems="10"
-                android:hint="必要時間"
-                android:inputType="numberDecimal" />
-
         </LinearLayout>
 
     </LinearLayout>

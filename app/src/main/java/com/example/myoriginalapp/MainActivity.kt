@@ -35,8 +35,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         //ダミーデータとしてコンパイル後毎回自動生成
-//        create("あ","0620",10,true)
-//        create("う","0622",20,true)
+//        create("い","0623",40,true)
+//        create("え","0622",25,true)
 
         val taskList = readAll()
 
@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
 //                }
                 override fun onChosenItemsClick(item: UnSolvedTask, flag:Boolean) {//未選択時にクリックで「1:選択判定」、選択時にクリックで「0:未選択判定」、それ以外はエラー
                     update(item,flag)
-                    Toast.makeText(applicationContext, "isChosen:"+ item.isChosen.toString(), Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(applicationContext, "isChosen:"+ item.isChosen.toString(), Toast.LENGTH_SHORT).show()
                 }
 
             }

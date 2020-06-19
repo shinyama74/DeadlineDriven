@@ -4,17 +4,25 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.system.Os.read
-import android.text.Editable
+import android.view.View
 import android.widget.Button
+import android.widget.DatePicker
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_input_task.*
+import java.util.*
+import android.app.DatePickerDialog as DatePickerDialog1
 
-class InputTaskActivity : AppCompatActivity() {
+class InputTaskActivity : AppCompatActivity(), DatePickerDialog1.OnDateSetListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_input_task)
+
+        val dateInputView=findViewById<View>(R.id.InputTaskDeadlineTextView)
+        val dateButton=findViewById<Button>(R.id.dateInputButton)
+        dateButton.setOnClickListener {
+            showDatePickerDialog(this)
+        }
 
         val registerButton = findViewById<Button>(R.id.InputCompleteButton)
         registerButton.setOnClickListener {
@@ -44,4 +52,18 @@ class InputTaskActivity : AppCompatActivity() {
             finish()
         }
     }
+
+    override fun onDateSet(view: DatePicker, year: Int, monthOfYear: Int, dayOfMonth: Int) {
+
+        val str = String.format(Locale.US, "%d/%d/%d", year, monthOfYear+1, dayOfMonth)
+        InputTaskDeadlineTextView.setText(str)
+    }
+
+    fun showDatePickerDialog(v: InputTaskActivity) {
+        val newFragment = DatePick()
+        newFragment.show(supportFragmentManager, "datePicker")
+
+    }
+
 }
+

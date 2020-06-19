@@ -10,7 +10,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".FailureActivity"></activity>
+        <activity android:name=".DataPick"></activity>
+        <activity android:name=".SuccessActivity" />
+        <activity android:name=".FailureActivity" />
         <activity android:name=".GameActivity" />
         <activity android:name=".SettingActivity" />
         <activity android:name=".InputTaskActivity" />

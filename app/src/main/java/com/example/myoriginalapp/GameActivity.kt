@@ -92,7 +92,7 @@ class GameActivity : AppCompatActivity() {
             if (canvasHeight < currentY + dy + bitmapHeight) {
                 dy = -dy
             }
-//            currentX += dx
+            currentX += dx
 //            currentY += dy
         }
 
@@ -115,16 +115,13 @@ class GameActivity : AppCompatActivity() {
             bitmapWidth = bitmap.width
 
             //開始位置を指定。画面中央は、ディスプレイ幅の1/2と高さの1/2で得ている。
-//            val x0 = (displayWidth-bitmapWidth/2).toFloat()
-            val x0 = (220).toFloat()
+            val x0 = (displayWidth-bitmapWidth/2).toFloat()
             val y0 = (400).toFloat()
 
             //x方向、y方向の、描画ごとの移動量。変えると、アニメーションの移動速度が変化する感じか。
             //ここでは起動のたび（MyViewインスタンス生成のたび？）Randomで速度が変わっている。
-//            val r = Random()
-//            dx = ((1.0 * r.nextFloat() - 1.0)*STEP).toFloat()
-//            dy = ((1.0 * r.nextFloat() - 1.0)*STEP).toFloat()
             val roadLong:Float = (displayWidth-bitmapWidth/2).toFloat()-(220).toFloat()
+
             dx = (roadLong/shurikenVelocity/100.toFloat()).toFloat()
             dy = 10.0.toFloat()
 
@@ -177,10 +174,10 @@ private inner class blnView(blnContext: Context?, blnBitmap: Bitmap) : View(blnC
 //        if (blnCurrentX + blndx < 0) {
 //            blndx = -blndx
 //        }
-        if (blnCurrentY + blndy < 400 - blndy*10) {//ふわふわの下限
+        if (blnCurrentY + blndy + blnbitmapWidth < 400 - 50) {//ふわふわの下限
             blndy = -blndy
         }
-        if (400 + blndy*10 < blnCurrentY + blndy) {//ふわふわの上限
+        if (400 + 50 < blnCurrentY + blndy + blnbitmapWidth) {//ふわふわの上限
             blndy = -blndy
         }
 //        if (canvasWidth < blnCurrentX + blndx + blnbitmapWidth) {
@@ -223,7 +220,7 @@ private inner class blnView(blnContext: Context?, blnBitmap: Bitmap) : View(blnC
 //            dx = ((1.0 * r.nextFloat() - 1.0)*STEP).toFloat()
 //        blndy = ((1.0 * r.nextFloat() - 1.0)*STEP).toFloat()
 //        dx = 1.0.toFloat()
-        blndy = 1.0.toFloat()
+        blndy = 2.0.toFloat()
 
 
 //            //これはよくわからない。x0,y0でも動くぽいが。
@@ -426,7 +423,6 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
             mPainter.isAntiAlias = true
         }
     }
-
 
 
     companion object {

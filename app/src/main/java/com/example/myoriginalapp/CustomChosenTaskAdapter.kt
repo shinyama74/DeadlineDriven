@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import io.realm.OrderedRealmCollection
+import io.realm.RealmRecyclerViewAdapter
+import kotlinx.android.synthetic.main.chosen_item_task_data_cell.view.*
 import kotlinx.android.synthetic.main.item_task_data_cell.view.*
 
 class CustomChosenTaskAdapter(private val context: Context,
@@ -14,9 +16,7 @@ class CustomChosenTaskAdapter(private val context: Context,
                               private var listener: OnItemClickLisener,
                               private val autoUpdate: Boolean //trueにするとDB更新時に自動でView生成してくれる
 ):
-    RecyclerView.Adapter<CustomChosenTaskAdapter.ViewHolder> () {//RealmRecyclerViewからただのRecyclerViewへ
-
-    var items: MutableList<UnSolvedTask?> =mutableListOf()
+    RealmRecyclerViewAdapter<UnSolvedTask,CustomChosenTaskAdapter.ViewHolder>(chosenTaskList,autoUpdate) {//やっぱりRealmRecyclerViewへ
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 //        val TaskImage: ImageView =view.findViewById(R.id.taskImageView)
@@ -24,8 +24,8 @@ class CustomChosenTaskAdapter(private val context: Context,
         val TaskCostTime: TextView = view.findViewById(R.id.cscostTimeTextView)
         val TaskName: TextView = view.findViewById(R.id.cstaskNameTextView)
 
-        val deleteButton: ImageView = view.deleteButton
-        val checkButton: ImageButton = view.checkTaskButton
+        val deleteButton: ImageView = view.csdeleteButton
+//        val checkButton: ImageButton = view.checkTaskButton
         //val container : LinearLayout = view.container
     }
 
@@ -38,14 +38,14 @@ class CustomChosenTaskAdapter(private val context: Context,
 //        this.items= chosenData.toMutableList()
 //    }
 
-      fun addAll2(items: List<UnSolvedTask>){
-          this.items.addAll(items)
-          notifyDataSetChanged()
-      }
+//      fun addAll2(items: List<UnSolvedTask>){
+//          this.items.addAll(items)
+//          notifyDataSetChanged()
+//      }
 
 
     override fun getItemCount(): Int{
-        return items.size
+        return chosenTaskList?.size ?: 0
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -57,18 +57,16 @@ class CustomChosenTaskAdapter(private val context: Context,
         holder.deleteButton.setOnClickListener {
             listener.onItemDeleteClick(item)
         }
-        holder.checkButton.setOnClickListener {
-            listener.onItemCheckClick(item)
-        }
+//        holder.checkButton.setOnClickListener {
+//            listener.onItemCheckClick(item)
+//        }
 
         //holder.container.setOnClickListener{
         //    listener.onItemClick(item)
         //}
     }
 
-
-
-    interface OnItemClickLisener{
+        interface OnItemClickLisener{
         fun onItemDeleteClick(item: UnSolvedTask)
         fun onItemCheckClick(item: UnSolvedTask)
     }

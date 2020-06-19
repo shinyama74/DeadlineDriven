@@ -71,7 +71,7 @@
         app:srcCompat="@drawable/clock_aicon" />
 
     <EditText
-        android:id="@+id/editTextNumberSigned"
+        android:id="@+id/workingTimeNumber"
         android:layout_width="125dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"

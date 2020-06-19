@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 
 //startActivityForResultの引数。どこで起動したアクティビティかを判別するのに用いる。
@@ -34,8 +35,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         //ダミーデータとしてコンパイル後毎回自動生成
-        create("checkedDay7プレゼン資料作り","0620",60,true)
-        create("checked月曜３限レポート","0622",45,true)
+//        create("checkedDay7プレゼン資料作り","0620",60,true)
+//        create("checked月曜３限レポート","0622",45,true)
 
         val taskList = readAll()
 
@@ -46,12 +47,10 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(applicationContext, "「" + item.taskName + "」を削除しました", Toast.LENGTH_SHORT).show()
                     delete(item.id)
                 }
-                override fun onItemCheckClick(item: UnSolvedTask, flag:Boolean) {
-                    update(item,flag)
-                    Toast.makeText(applicationContext, "isChosen:"+ item.isChosen.toString(), Toast.LENGTH_SHORT).show()
-                    Toast.makeText(applicationContext, "チェックしました", Toast.LENGTH_SHORT).show()
-                }
-
+//                override fun onItemCheckClick(item: UnSolvedTask) {
+////                    update(item)
+//                    Toast.makeText(applicationContext, "isChosen:"+ item.isChosen.toString(), Toast.LENGTH_SHORT).show()
+//                }
                 override fun onChosenItemsClick(item: UnSolvedTask, flag:Boolean) {//未選択時にクリックで「1:選択判定」、選択時にクリックで「0:未選択判定」、それ以外はエラー
                     update(item,flag)
                     Toast.makeText(applicationContext, "isChosen:"+ item.isChosen.toString(), Toast.LENGTH_SHORT).show()
@@ -126,11 +125,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun update(item: UnSolvedTask, flag:Boolean){
+    fun update(item: UnSolvedTask, flag: Boolean){
         realm.executeTransaction {
             var task = realm.where(UnSolvedTask::class.java).equalTo("id",item.id).findFirst()
-            if(flag) {
+            if(task!!.isChosen==false) {
                 task!!.isChosen=true
+
             }else{
                 task!!.isChosen=false
             }

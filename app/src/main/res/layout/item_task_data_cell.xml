@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:layout_centerInParent="false"
     android:layout_centerHorizontal="false"
-    android:background="#C2F8F2">
+    android:background="@drawable/color_from_press_state">
 
     <CheckBox
         android:id="@+id/taskCheckBox"

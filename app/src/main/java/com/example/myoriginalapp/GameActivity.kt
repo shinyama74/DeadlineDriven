@@ -14,6 +14,8 @@ import java.util.*
 
 class GameActivity : AppCompatActivity() {
     var flag:Boolean = false
+    var totalTimeFlag:Boolean = false
+    var baloonBrokenDescribeFlag : Boolean = false
 
 //一つのオブジェクトに一つのクラス。継承処理したい。
 
@@ -462,6 +464,7 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
         //ビットマップ（＝回転する絵）を得ておく。
         val bitmap = BitmapFactory.decodeResource(resources, R.drawable.shuriken01) //drawableに突っ込んでおいた画像を使用。
         val balloonBitmap = BitmapFactory.decodeResource(resources, R.drawable.kikyu)
+        val balloonBrokenBitmap = BitmapFactory.decodeResource(resources, R.drawable.haretsu)
         val Cld1Bitmap = BitmapFactory.decodeResource(resources, R.drawable.kumo1)
         val Cld2Bitmap = BitmapFactory.decodeResource(resources, R.drawable.kumo2)
 
@@ -469,6 +472,7 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
         //これがインスタンス？
         val myView = MyView(this, bitmap)
         val balloonView = blnView(this, balloonBitmap)
+        val balloonBrokenView = blnView(this, balloonBrokenBitmap)
         val cld1View = cld1View(this, Cld1Bitmap)
         val cld2View = cld2View(this, Cld2Bitmap)
 
@@ -477,6 +481,8 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
         relativeLayout.addView(cld2View)
         relativeLayout.addView(myView)
         relativeLayout.addView(balloonView)
+        relativeLayout.addView(balloonBrokenView)
+
         //基本は、ViewのonDraw内（描画処理の実体）を1回呼んでおしまいなので、
         //1枚絵ならば、ここまでで完成。
 
@@ -493,25 +499,42 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
                 } catch (e: InterruptedException) {
                     e.printStackTrace()
                 }
-                myView.postInvalidate() //←コレで結果的にViewのonDrawを呼ぶのだそう。
-                balloonView.postInvalidate()
+
+                myView.postInvalidate() //←コレで結果的にViewのonDrawを呼ぶのだそう。//類似のinvalidateというメソッドもあるが、別スレッドからの場合はこちらのpost～を使うとのこと。
                 cld1View.postInvalidate()
                 cld2View.postInvalidate()
-                //類似のinvalidateというメソッドもあるが、別スレッドからの場合はこちらのpost～を使うとのこと。
-                myView.move() //再描画後にコレ。次の描画用に、新しい位置座標などを更新してる。
-                balloonView.move()
-                cld1View.move()
-                cld2View.move()
+                if(totalTimeFlag){
+                    balloonBrokenView.postInvalidate()
+                    baloonBrokenDescribeFlag=true
+                }else{
+                    balloonView.postInvalidate()
+                }
+
+                if(baloonBrokenDescribeFlag){
+                    Thread.sleep(3000.toLong())
+                    flag=false
+                }
+                else{
+                    myView.move() //再描画後にコレ。次の描画用に、新しい位置座標などを更新してる。
+                    balloonView.move()
+                    cld1View.move()
+                    cld2View.move()
+                }
+
             }
         })
 
  //=====================================================================================
- //　一時プロパティ
-        //全体残り時間（仮にここで定める）
-        var setMinutes:Int=61
+
+        progressBar1.setPadding(0, 0, 800, 0)
+        progressBar1.max =cnt
+        progressBar1.progress = cnt
+        progressBar1.secondaryProgress = cnt
+
+        //全体残り時間
+        val minutes = intent.getStringExtra("workingTime")
+        var setMinutes:Int= Integer.parseInt(minutes)
         var setSeconds:Int=setMinutes*60
-
-
 
 
 //   progress timer 関連　PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
@@ -519,33 +542,25 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
         TimerProgressBar.max=setSeconds
         TimerProgressBar.progress=setSeconds
 
-        progressBar1.setPadding(0, 0, 800, 0)
-        progressBar1.max =cnt
-        progressBar1.progress = cnt
-        progressBar1.secondaryProgress = cnt
-
-
-        val startButton = findViewById<Button>(R.id.startButton)
-        startButton.setOnClickListener {
-            hnd0.post(rnb0)
-            var restSeconds=findViewById<TextView>(R.id.timerSecondsTextView)
-            var restMinutes=findViewById<TextView>(R.id.timerMinutesTextView)
-            var restHours=findViewById<TextView>(R.id.timerHoursTextView)
-            setTimerProgress(setSeconds,restSeconds,restMinutes,restHours)
-            flag = !flag
-            if(flag){
-                mainThread.start()
-            }
+        var restSeconds=findViewById<TextView>(R.id.timerSecondsTextView)
+        var restMinutes=findViewById<TextView>(R.id.timerMinutesTextView)
+        var restHours=findViewById<TextView>(R.id.timerHoursTextView)
+        setTimerProgress(setSeconds,restSeconds,restMinutes,restHours)
+        flag=true
+        hnd0.post(rnb0)
+        mainThread.start()
+        if(!flag){
+            val intentFailure = Intent(this,FailureActivity::class.java)
+            startActivityForResult(intentFailure,MY_REQUEST_CODE)
         }
-
     }
 
     fun setTimerProgress(setSeconds:Int,rSeconds:TextView,rMinutes:TextView,rHours:TextView){
         var seconds = setSeconds
         var delayMillis:Long=1000
-        val hnd=Handler()
+        val totalHand=Handler()
 
-        val rnb: Runnable=object: Runnable{
+        val totalRnb: Runnable=object: Runnable{
             override fun run(){
                 seconds--
                 TimerProgressBar.progress=seconds
@@ -557,15 +572,19 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
                 checkDigits(minutes,rMinutes)
                 checkDigits(seconds,rSeconds)
 
-                if(seconds>=0){//1000ミリ秒=1秒
-                    hnd.postDelayed(this, delayMillis)
+                if(seconds>0){//1000ミリ秒=1秒
+                    totalHand.postDelayed(this, delayMillis)
                 }
-                else if(seconds<0){
+                else if(seconds<=0){
+                    totalTimeFlag=true
                     Toast.makeText(applicationContext, "時間切れです", Toast.LENGTH_SHORT).show()
                 }
             }
         }
-        hnd.post(rnb)
+        totalHand.post(totalRnb)
+
+        //↓以降、時間切れ後のメソッド
+
     }
 
     fun checkDigits(number:Int,text:TextView){

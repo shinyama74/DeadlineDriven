@@ -3,6 +3,7 @@ package com.example.myoriginalapp
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
 import android.widget.Button
 import android.widget.Toast
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -11,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import io.realm.Realm
 import io.realm.RealmResults
 import io.realm.Sort
+import kotlinx.android.synthetic.main.activity_input_task.*
+import kotlinx.android.synthetic.main.activity_setting.*
 import java.util.*
 
 class SettingActivity : AppCompatActivity() {
@@ -59,6 +62,8 @@ class SettingActivity : AppCompatActivity() {
         val startButton = findViewById<Button>(R.id.gameStartButton)
         startButton.setOnClickListener {
             val intentGame = Intent(this,GameActivity::class.java)
+            val workingMinutes: String? = workingTimeNumber.text.toString()
+            intentGame.putExtra("workingTime",workingMinutes)
             startActivityForResult(intentGame,MY_REQUEST_CODE)
         }
     }
@@ -69,5 +74,9 @@ class SettingActivity : AppCompatActivity() {
     }
 
     fun delete(id: String){
+        realm.executeTransaction{
+            val task = realm.where(UnSolvedTask::class.java).equalTo("id" , id).findFirst()?: return@executeTransaction
+            task.deleteFromRealm()
+        }
     }
 }

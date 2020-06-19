@@ -35,6 +35,9 @@ class CustomTaskAdapter(private val context: Context,
 
         val checkTaskBox:CheckBox = view.findViewById(R.id.taskCheckBox)
         //val container : LinearLayout = view.container
+
+        val TaskLayout:ConstraintLayout  = view.findViewById(R.id.taskContainerLayout)
+
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
@@ -44,7 +47,7 @@ class CustomTaskAdapter(private val context: Context,
 
     interface OnItemClickListener{
         fun onItemDeleteClick(item: UnSolvedTask)
-        fun onItemCheckClick(item: UnSolvedTask, flag:Boolean)
+//        fun onItemCheckClick(item: UnSolvedTask)
         fun onChosenItemsClick(item: UnSolvedTask, flag:Boolean)
     }
 
@@ -56,16 +59,23 @@ class CustomTaskAdapter(private val context: Context,
         holder.TaskName.text = item.taskName
         holder.TaskDeadLine.text = item.taskDeadLine
         holder.TaskCostTime.text = item.taskCostTime.toString()
+
+        //チェックボックスの現在の状態でisChosenを判定(checkboxの見た目を調整?
+        //↓これがないとチェックボックスがバグる
+        if (item.isChosen != holder.checkTaskBox.isChecked){
+            holder.checkTaskBox.isChecked = item.isChosen
+        }
+
         var flag = holder.checkTaskBox.isChecked
 
         holder.deleteButton.setOnClickListener {
             listener.onItemDeleteClick(item)
         }
-        holder.checkButton.setOnClickListener {
-            listener.onItemCheckClick(item,flag)
-        }
+//        holder.checkButton.setOnClickListener {
+//            listener.onItemCheckClick(item)
+//        }
         holder.checkTaskBox.setOnClickListener{
-            listener.onChosenItemsClick(item,flag)
+            listener.onChosenItemsClick(item,holder.checkTaskBox.isChecked)
         }
 //        //holder.container.setOnClickListener{
         //    listener.onItemClick(item)

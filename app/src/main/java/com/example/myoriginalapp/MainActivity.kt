@@ -115,7 +115,7 @@ class MainActivity : AppCompatActivity() {
                 task.taskName = tskName
                 task.taskDeadLine = tskDeadLine
                 task.taskCostTime = tskCostTime
-                task.isChosen = true
+                task.isChosen = false
         }
     }
 

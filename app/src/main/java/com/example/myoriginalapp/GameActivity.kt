@@ -3,19 +3,28 @@ package com.example.myoriginalapp
 import android.content.Context
 import android.content.Intent
 import android.graphics.*
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log.i
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import io.realm.Realm
+import io.realm.RealmList
+import io.realm.RealmResults
+import io.realm.Sort
 import kotlinx.android.synthetic.main.activity_game.*
-import kotlinx.android.synthetic.main.activity_input_task.view.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 class GameActivity : AppCompatActivity() {
     var flag:Boolean = false
     var totalTimeFlag:Boolean = false
     var baloonBrokenDescribeFlag : Boolean = false
+
+    private val realm: Realm by lazy {
+        Realm.getDefaultInstance()
+    }
 
 //一つのオブジェクトに一つのクラス。継承処理したい。
 
@@ -431,23 +440,21 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
 
     //  Timer　関連　　PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
 
-    var cnt=100
-    val hnd0=Handler()
-
-    val rnb0: Runnable=object: Runnable{
-        override fun run(){
-            cnt--
-            progressBar1.progress = cnt
-            if(cnt>=0){//1000ミリ秒=1秒
-                hnd0.postDelayed(this,100)
-            }
-            else if(cnt<0){
-                Toast.makeText(applicationContext, "時間切れです", Toast.LENGTH_SHORT).show()
-            }
-
-        }
-
-    }
+//    var cnt=100
+//    val hnd0=Handler()
+//
+//    val rnb0: Runnable=object: Runnable{
+//        override fun run(){
+//            cnt--
+//            progressBar1.progress = cnt
+//            if(cnt>=0){//1000ミリ秒=1秒
+//                hnd0.postDelayed(this,100)
+//            }
+//            else if(cnt<0){
+//                Toast.makeText(applicationContext, "時間切れです", Toast.LENGTH_SHORT).show()
+//            }
+//        }
+//    }
 
 //=================================以下main===================================================================================================
 
@@ -523,34 +530,52 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
                     cld1View.move()
                     cld2View.move()
                 }
-
             }
         })
 
  //=====================================================================================
 
-        progressBar1.setPadding(0, 0, 800, 0)
-        progressBar1.max =cnt
-        progressBar1.progress = cnt
-        progressBar1.secondaryProgress = cnt
+//        progressBar1.setPadding(0, 0, 800, 0)
+//        progressBar1.max =cnt
+//        progressBar1.progress = cnt
+
+
+//   progress timer 関連　PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
 
         //全体残り時間
         val minutes = intent.getStringExtra("workingTime")
         var setMinutes:Int= Integer.parseInt(minutes)
         var setSeconds:Int=setMinutes*60
-
-
-//   progress timer 関連　PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
-
         TimerProgressBar.max=setSeconds
         TimerProgressBar.progress=setSeconds
-
         var restSeconds=findViewById<TextView>(R.id.timerSecondsTextView)
         var restMinutes=findViewById<TextView>(R.id.timerMinutesTextView)
         var restHours=findViewById<TextView>(R.id.timerHoursTextView)
         setTimerProgress(setSeconds,restSeconds,restMinutes,restHours)
+
+
+//realmからタスクを取得・タスクの操作TRTRTRTRTRTRTRRTRTRTRTRTRTRTRTRTRTRTRTRTRTRTRTRTRTRTRTRTRTRTRT
+
+        //  タスクを取得
+        val taskList = readAll()
+        val taskOriginArray = RealmList<UnSolvedTask>()
+        val taskNum:Int=taskList.size
+        taskOriginArray.addAll(taskList.subList(0, taskNum))
+
+        var layoutViewIdList = mutableListOf<Int>()
+
+        //activity_gameへ表示させていく
+        val taskArray =taskOriginArray
+        rmSetTaskToActivity(taskArray,layoutViewIdList)
+
+        //「完了」クリックで次のタスクをセット
+        val completeButton:Button = findViewById(R.id.taskCompleteButton)
+        completeButton.setOnClickListener {
+            val droppedTaskArray=taskArray.drop(1)
+            setTaskToActivity(droppedTaskArray,layoutViewIdList)
+        }
+
         flag=true
-        hnd0.post(rnb0)
         mainThread.start()
     }
 
@@ -594,8 +619,77 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
         }
     }
 
+    fun readAll() : RealmResults<UnSolvedTask> {
+        return realm.where(UnSolvedTask::class.java).equalTo("isChosen" ,true).findAll().sort("taskCostTime", Sort.ASCENDING)
+    }
 
+    fun makeProgressBar(tskName:String,tskTime:Int):Int{
+        val otherTaskLayout=LinearLayout(this)
+        otherTaskLayout.setOrientation(LinearLayout.HORIZONTAL);
+        val otherTaskName=TextView(this)
+        otherTaskName.text=tskName
+        val otherTaskTime=TextView(this)
+        otherTaskTime.text = tskTime.toString() + "分"
+        val progressBar = ProgressBar(this, null,android.R.attr.progressBarStyleHorizontal)
+        progressBar.progress=tskTime
+        progressBar.max=100
+        val progressLayout = findViewById<LinearLayout>(R.id.progressLayout)
 
+        otherTaskLayout.addView(otherTaskName)
+        otherTaskLayout.addView(otherTaskTime)
+        otherTaskLayout.addView(progressBar)
+        val viewId = View.generateViewId()
+        otherTaskLayout.id = viewId
+        progressLayout.addView(otherTaskLayout)
+        //作ったLayoutViewのIdを返す
+        return viewId
+    }
+
+    fun setCurrentTasktimer(tskName:String,tskTime:Int){//currentタスクへ設定
+        var restSeconds=findViewById<TextView>(R.id.currentTimerSecondsTextView)
+        var restMinutes=findViewById<TextView>(R.id.currentTimerMinutesTextView)
+        var restHours=findViewById<TextView>(R.id.currentTimerHoursTextView)
+        var crtTaskName = findViewById<TextView>(R.id.currentTaskNameTextView)
+        crtTaskName.text = tskName
+        setTimerProgress(tskTime,restSeconds,restMinutes,restHours)
+    }
+
+    fun rmSetTaskToActivity(taskArray:RealmList<UnSolvedTask>,layoutIdList:MutableList<Int>){
+        for ((index, elem) in taskArray.withIndex()) {
+            //一つ目のタスクはcurrentタスクへ
+            if(index==0){
+                var crtTaskName=elem.taskName
+                var crtTaskTime=(elem.taskCostTime)*60
+                setCurrentTasktimer(crtTaskName,crtTaskTime)
+            }else{//二つ目以降はprogressBarへ
+                var otherTaskName = elem.taskName
+                var otherTaskTime=elem.taskCostTime
+                var newId:Int=makeProgressBar(otherTaskName,otherTaskTime)
+                layoutIdList.add(newId)
+            }
+        }
+    }
+
+    fun setTaskToActivity(taskArray:List<UnSolvedTask>,layoutViewIdList:MutableList<Int>){
+        val progressLayout = findViewById<LinearLayout>(R.id.progressLayout)
+        for(j in layoutViewIdList){
+            val toDeleteLayout = findViewById<LinearLayout>(j)
+            progressLayout.removeView(toDeleteLayout)
+        }
+
+        for ((index, elem) in taskArray.withIndex()) {
+            //一つ目のタスクはcurrentタスクへ
+            if(index==0){
+                var crtTaskName=elem.taskName
+                var crtTaskTime=(elem.taskCostTime)*60
+                setCurrentTasktimer(crtTaskName,crtTaskTime)
+            }else{//二つ目以降はprogressBarへ
+                var otherTaskName = elem.taskName
+                var otherTaskTime=elem.taskCostTime
+                makeProgressBar(otherTaskName,otherTaskTime)
+            }
+        }
+    }
 
 
 }

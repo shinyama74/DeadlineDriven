@@ -8,24 +8,123 @@
     tools:context=".GameActivity">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/linearLayout2"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
         android:gravity="center_horizontal"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/gameScreenView"
+        app:layout_constraintEnd_toStartOf="@+id/taskCompleteButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/nowTaskNameTextView"
+            android:id="@+id/currentTaskNameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="16dp"
             android:gravity="center_vertical"
-            android:text="Nowタスク名"
+            android:text="Now タスク名"
             android:textSize="18sp" />
+
+
+        <LinearLayout
+            android:id="@+id/currentTimerTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/currentTimerHoursTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/crthoursToMinutes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/currentTimerMinutesTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/crtminutesToSeconds"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/currentTimerSecondsTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00"
+                android:textSize="30sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/taskCompleteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/shiriken02"
+        android:backgroundTint="#E91E63"
+        android:text="完了"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/gameScreenView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RelativeLayout
+        android:id="@+id/gameScreenView"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_marginBottom="200dp"
+        android:background="#5CC3F1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.79">
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gameScreenView">
+
+        <TextView
+            android:id="@+id/restTotalTimeTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="16dp"
+            android:gravity="center_vertical"
+            android:text="残り時間"
+            android:textSize="24sp" />
 
         <LinearLayout
             android:id="@+id/timerTextView"
@@ -38,35 +137,35 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="00"
-                android:textSize="30sp" />
+                android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/hoursToMinutes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=":"
-                android:textSize="30sp" />
+                android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/timerMinutesTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="00"
-                android:textSize="30sp" />
+                android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/minutesToSeconds"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=":"
-                android:textSize="30sp" />
+                android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/timerSecondsTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="00"
-                android:textSize="30sp" />
+                android:textSize="24sp" />
         </LinearLayout>
     </LinearLayout>
 
@@ -75,40 +174,35 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="75dp"
-        android:layout_marginRight="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
 
     <LinearLayout
         android:id="@+id/progressLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <ProgressBar
-            android:id="@+id/progressBar1"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="532dp" />
-
-    </LinearLayout>
-
-    <RelativeLayout
-        android:id="@+id/gameScreenView"
-        android:layout_width="match_parent"
-        android:layout_height="350dp"
-        android:layout_marginTop="100dp"
-        android:background="#5CC3F1"
+        android:layout_width="0dp"
+        android:layout_height="150dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="20dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/TimerProgressBar"/>
 
-    </RelativeLayout>
+    <Button
+        android:id="@+id/resetButton"
+        android:layout_width="50sp"
+        android:layout_height="30sp"
+        android:layout_marginBottom="4dp"
+        android:text="RESET"
+        android:textSize="8sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/progressLayout" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

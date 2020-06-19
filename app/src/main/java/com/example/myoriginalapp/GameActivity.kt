@@ -535,14 +535,9 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
 
  //=====================================================================================
 
-//        progressBar1.setPadding(0, 0, 800, 0)
-//        progressBar1.max =cnt
-//        progressBar1.progress = cnt
-
-
 //   progress timer 関連　PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
 
-        //全体残り時間
+        ////全体残り時間ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ
         val minutes = intent.getStringExtra("workingTime")
         var setMinutes:Int= Integer.parseInt(minutes)
         var setSeconds:Int=setMinutes*60
@@ -551,7 +546,7 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
         var restSeconds=findViewById<TextView>(R.id.timerSecondsTextView)
         var restMinutes=findViewById<TextView>(R.id.timerMinutesTextView)
         var restHours=findViewById<TextView>(R.id.timerHoursTextView)
-        setTimerProgress(setSeconds,restSeconds,restMinutes,restHours)
+        setTimerProgress(setSeconds,restSeconds,restMinutes,restHours,true)
 
 
 //realmからタスクを取得・タスクの操作TRTRTRTRTRTRTRRTRTRTRTRTRTRTRTRTRTRTRTRTRTRTRTRTRTRTRTRTRTRTRT
@@ -570,7 +565,9 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
 
         //「完了」クリックで次のタスクをセット
         val completeButton:Button = findViewById(R.id.taskCompleteButton)
+
         completeButton.setOnClickListener {
+//            totalHand.removeCallbacks(totalRnb);
             val droppedTaskArray=taskArray.drop(1)
             setTaskToActivity(droppedTaskArray,layoutViewIdList)
         }
@@ -579,7 +576,7 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
         mainThread.start()
     }
 
-    fun setTimerProgress(setSeconds:Int,rSeconds:TextView,rMinutes:TextView,rHours:TextView){
+    fun setTimerProgress(setSeconds:Int,rSeconds:TextView,rMinutes:TextView,rHours:TextView,sign:Boolean){
         var seconds = setSeconds
         var delayMillis:Long=1000
         val totalHand=Handler()
@@ -587,7 +584,9 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
         val totalRnb: Runnable=object: Runnable{
             override fun run(){
                 seconds--
-                TimerProgressBar.progress=seconds
+                if(sign){
+                    TimerProgressBar.progress=seconds
+                }
                 var hours=seconds/3600
                 var minutes= (seconds%3600)/60
                 var seconds = seconds%60
@@ -606,9 +605,6 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
             }
         }
         totalHand.post(totalRnb)
-
-        //↓以降、時間切れ後のメソッド
-
     }
 
     fun checkDigits(number:Int,text:TextView){
@@ -651,7 +647,7 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
         var restHours=findViewById<TextView>(R.id.currentTimerHoursTextView)
         var crtTaskName = findViewById<TextView>(R.id.currentTaskNameTextView)
         crtTaskName.text = tskName
-        setTimerProgress(tskTime,restSeconds,restMinutes,restHours)
+        setTimerProgress(tskTime,restSeconds,restMinutes,restHours,false)
     }
 
     fun rmSetTaskToActivity(taskArray:RealmList<UnSolvedTask>,layoutIdList:MutableList<Int>){
@@ -670,12 +666,13 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
         }
     }
 
-    fun setTaskToActivity(taskArray:List<UnSolvedTask>,layoutViewIdList:MutableList<Int>){
+    fun setTaskToActivity(taskArray:List<UnSolvedTask>,layoutIdList:MutableList<Int>){
         val progressLayout = findViewById<LinearLayout>(R.id.progressLayout)
-        for(j in layoutViewIdList){
+        for(j in layoutIdList){
             val toDeleteLayout = findViewById<LinearLayout>(j)
             progressLayout.removeView(toDeleteLayout)
         }
+        layoutIdList.clear()
 
         for ((index, elem) in taskArray.withIndex()) {
             //一つ目のタスクはcurrentタスクへ
@@ -686,7 +683,8 @@ private inner class cld1View(cld1Context: Context?, cld1Bitmap: Bitmap) : View(c
             }else{//二つ目以降はprogressBarへ
                 var otherTaskName = elem.taskName
                 var otherTaskTime=elem.taskCostTime
-                makeProgressBar(otherTaskName,otherTaskTime)
+                var newId:Int=makeProgressBar(otherTaskName,otherTaskTime)
+                layoutIdList.add(newId)
             }
         }
     }

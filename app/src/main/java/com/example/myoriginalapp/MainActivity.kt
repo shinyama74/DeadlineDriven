@@ -35,8 +35,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         //ダミーデータとしてコンパイル後毎回自動生成
-//        create("checkedDay7プレゼン資料作り","0620",60,true)
-//        create("checked月曜３限レポート","0622",45,true)
+//        create("あ","0620",10,true)
+//        create("う","0622",20,true)
 
         val taskList = readAll()
 

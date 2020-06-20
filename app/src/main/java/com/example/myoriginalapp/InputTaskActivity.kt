@@ -51,6 +51,8 @@ class InputTaskActivity : AppCompatActivity(), DatePickerDialog1.OnDateSetListen
         backButton.setOnClickListener {
             finish()
         }
+
+
     }
 
     override fun onDateSet(view: DatePicker, year: Int, monthOfYear: Int, dayOfMonth: Int) {
@@ -64,6 +66,7 @@ class InputTaskActivity : AppCompatActivity(), DatePickerDialog1.OnDateSetListen
         newFragment.show(supportFragmentManager, "datePicker")
 
     }
+
 
 }
 

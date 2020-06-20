@@ -66,6 +66,7 @@ class SettingActivity : AppCompatActivity() {
             intentGame.putExtra("workingTime",workingMinutes)
             startActivityForResult(intentGame,MY_REQUEST_CODE)
         }
+
     }
 
     //Realmの呼び出し.
